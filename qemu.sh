@@ -36,6 +36,12 @@ case $1 in
         qemu-system-x86_64 $OPTS
     ;; 
 
+    restart)
+        kill -9 `ps aux | grep qemu-system-x86_64 | awk '{ print $2}'`
+        sleep 2
+        qemu-system-x86_64 $OPTS
+    ;; 
+
     net-setup)
         echo 1 > /proc/sys/net/ipv4/ip_forward
 
