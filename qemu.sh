@@ -9,12 +9,12 @@ TAP="tap0"
 
 OPTS="
     -machine type=q35,accel=kvm
-    -smp cpus=2
+    -smp cpus=4
     -m 4G
     -display curses
     -vga qxl
 
-    -drive file=$QCOW2,if=none,id=disk0
+    -drive file=$QCOW2,if=none,id=disk0,format=qcow2
     -device virtio-blk-pci,drive=disk0
 
     -netdev tap,ifname=$TAP,id=net0,script=no,downscript=no,vhost=on
@@ -26,7 +26,7 @@ OPTS="
 
 case $1 in 
     install)
-        qemu-img create -f qcow2 $QCOW2 50G
+        qemu-img create -f qcow2 $QCOW2 100G
         qemu-system-x86_64 $OPTS \
             -cdrom $ISO \
             -boot order=d
