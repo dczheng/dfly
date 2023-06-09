@@ -32,7 +32,7 @@ case $1 in
             -boot order=d
     ;;
 
-    run)
+    start)
         qemu-system-x86_64 $OPTS
     ;; 
 
