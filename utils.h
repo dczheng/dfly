@@ -1,3 +1,6 @@
+#include <sys/types.h>
+#include <sys/systm.h>
+
 #define _dump(_v, _k) do { \
     kprintf("[%s] %s: ", __FUNCTION__, #_v); \
     for (int i = 0; i < (_k); i++) \

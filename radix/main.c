@@ -1,9 +1,8 @@
 #include <sys/param.h>
 #include <sys/kernel.h>
 #include <sys/module.h>
-#include <sys/systm.h>
-#include <sys/types.h>
 #include <sys/malloc.h>
+#include <sys/systm.h>
 #include <netinet/ip.h>
 #include <net/radix.h>
 #include <stdio.h>
@@ -25,7 +24,7 @@ struct {
 } r;
 
 static int
-radix_test_load(void) {
+test_radix_load(void) {
     struct radix_data addr, mask;
     char buf[32];
 
@@ -37,7 +36,11 @@ radix_test_load(void) {
     addr.len = mask.len = offsetof(struct radix_data, in) + sizeof(struct in_addr);
 
     r.mask = r.addr = NULL;
-    if (!rn_inithead((void**)&r.mask, NULL, 0))
+
+    //if (!rn_inithead((void**)&r.mask, NULL, 0))
+    //    return ENOMEM;
+
+    if (!rn_inithead((void**)&r.mask, NULL, offsetof(struct radix_data, in) * NBBY))
         return ENOMEM;
 
     if (!rn_inithead((void**)&r.addr, r.mask, offsetof(struct radix_data, in) * NBBY))
@@ -60,7 +63,7 @@ radix_test_load(void) {
 }
 
 static void
-radix_test_unload(void) {
+test_radix_unload(void) {
     _debug("\n");
     if (r.mask != NULL)
         Free(r.mask);
@@ -69,13 +72,13 @@ radix_test_unload(void) {
 }
 
 static int
-radix_test_handler(module_t mod, int what, void *arg) {
+test_radix_handler(module_t mod, int what, void *arg) {
 	switch (what) {
 		case MOD_LOAD:
-            radix_test_load();
+            test_radix_load();
 			break;
 		case MOD_UNLOAD:
-            radix_test_unload();
+            test_radix_unload();
 			break;
 		default:
 			return (EOPNOTSUPP);
@@ -84,11 +87,11 @@ radix_test_handler(module_t mod, int what, void *arg) {
 }
 
 static moduledata_t moduledata = {
-	"radix_test",
-    radix_test_handler,
+	"test_radix",
+    test_radix_handler,
 	NULL
 };
 
-DECLARE_MODULE(radix_test, moduledata, SI_SUB_PSEUDO, SI_ORDER_ANY);
-MODULE_VERSION(radix_test, 1);
+DECLARE_MODULE(test_radix, moduledata, SI_SUB_PSEUDO, SI_ORDER_ANY);
+MODULE_VERSION(test_radix, 1);
 

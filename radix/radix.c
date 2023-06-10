@@ -367,7 +367,6 @@ static struct radix_node *
 rn_insert(char *key, struct radix_node_head *head, boolean_t *dupentry,
 	  struct radix_node nodes[2])
 {
-    _dump(key, clen(key));
 	struct radix_node *top = head->rnh_treetop;
 	int head_off = top->rn_offset, klen = clen(key);
 	struct radix_node *t = rn_search(key, top);
@@ -378,8 +377,9 @@ rn_insert(char *key, struct radix_node_head *head, boolean_t *dupentry,
 	/*
 	 * Find first bit at which the key and t->rn_key differ
 	 */
-    _debug("matched == left: %d\n", t == top->rn_left);
-    _debug("mached == right: %d\n", t == top->rn_right);
+    _dump(key, clen(key));
+    _debug("matched: %s\n",
+        t == top->rn_left ? "left" : (t == top->rn_right) ? "right": "Not top's child");
     {
 	char *cp2 = t->rn_key + head_off;
 	int cmp_res;
@@ -493,7 +493,7 @@ rn_addmask(char *netmask, boolean_t search, int skip,
 	x = rn_insert(cp, mask_rnh, &maskduplicated, x);
     _debug("insert end\n");
 	if (maskduplicated) {
-		log(LOG_ERR, "rn_addmask: mask impossibly already in tree");
+		log(LOG_ERR, "rn_addmask: mask impossibly already in tree\n");
 		Free(saved_x);
 		goto out;
 	}

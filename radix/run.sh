@@ -1,5 +1,8 @@
 #!/bin/sh
+
 make &&
-kldload ./radix-test.ko
-kldunload radix-test.ko
-make clean
+kldload ./test_radix.ko &&
+kldunload test_radix.ko &&
+dmesg
+
+make clean 2>&1 > /dev/null
