@@ -49,8 +49,6 @@
 #include <net/netmsg2.h>
 #include <net/netisr2.h>
 
-#include "../utils.h"
-
 /*
  * The arguments to the radix functions are really counted byte arrays with
  * the length in the first byte.  struct sockaddr's fit this type structurally.
@@ -377,9 +375,6 @@ rn_insert(char *key, struct radix_node_head *head, boolean_t *dupentry,
 	/*
 	 * Find first bit at which the key and t->rn_key differ
 	 */
-    _dump(key, clen(key));
-    _debug("matched: %s\n",
-        t == top->rn_left ? "left" : (t == top->rn_right) ? "right": "Not top's child");
     {
 	char *cp2 = t->rn_key + head_off;
 	int cmp_res;
@@ -488,12 +483,9 @@ rn_addmask(char *netmask, boolean_t search, int skip,
 	bzero(x, RN_MAXKEYLEN + 2 * (sizeof *x));
 	netmask = cp = (char *)(x + 2);
 	bcopy(addmask_key, cp, mlen);
-
-    _debug("insert begin\n");
 	x = rn_insert(cp, mask_rnh, &maskduplicated, x);
-    _debug("insert end\n");
 	if (maskduplicated) {
-		log(LOG_ERR, "rn_addmask: mask impossibly already in tree\n");
+		log(LOG_ERR, "rn_addmask: mask impossibly already in tree");
 		Free(saved_x);
 		goto out;
 	}
@@ -579,13 +571,9 @@ rn_addroute(char *key, char *netmask, struct radix_node_head *head,
 	 * nodes and possibly save time in calculating indices.
 	 */
 	if (netmask != NULL)  {
-        _debug("add mask begin\n");
 		if ((x = rn_addmask(netmask, FALSE, top->rn_offset,
-				    head->rnh_maskhead)) == NULL) {
-        _debug("add mask end, error\n");
+				    head->rnh_maskhead)) == NULL)
 			return (NULL);
-            }
-        _debug("add mask end\n");
 		b_leaf = x->rn_bit;
 		b = -1 - x->rn_bit;
 		netmask = x->rn_key;

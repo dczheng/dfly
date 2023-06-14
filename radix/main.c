@@ -28,12 +28,13 @@ test_radix_load(void) {
     struct radix_data addr, mask;
     char buf[32];
 
-    _debug("addr: %s\n", kinet_ntoa(addr.in, buf));
-    _debug("mask: %s\n", kinet_ntoa(mask.in, buf));
-
     addr.ip = htonl((192LL << 24) + (168LL << 16) + (1LL << 8) + 1);
     mask.ip = htonl(~((1LL << (32-24)) - 1) & 0xffffffff);
     addr.len = mask.len = offsetof(struct radix_data, in) + sizeof(struct in_addr);
+
+    _debug("addr: %s\n", kinet_ntoa(addr.in, buf));
+    _debug("mask: %s\n", kinet_ntoa(mask.in, buf));
+
 
     r.mask = r.addr = NULL;
 
