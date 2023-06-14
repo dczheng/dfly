@@ -59,6 +59,7 @@ test_radix_load(void) {
     _printd(r.addr->rnh_treetop->rn_bmask, uint8_t);
 
     r.addr->rnh_addaddr((char*)&addr, (char*)&mask, r.addr, addr.nodes);
+    _printb(r.addr->rnh_deladdr((char*)&r.addr, (char*)&r.mask, r.addr) == NULL); 
 
     return 0;
 }

@@ -49,6 +49,8 @@
 #include <net/netmsg2.h>
 #include <net/netisr2.h>
 
+#include "../utils.h"
+
 /*
  * The arguments to the radix functions are really counted byte arrays with
  * the length in the first byte.  struct sockaddr's fit this type structurally.
@@ -485,7 +487,7 @@ rn_addmask(char *netmask, boolean_t search, int skip,
 	bcopy(addmask_key, cp, mlen);
 	x = rn_insert(cp, mask_rnh, &maskduplicated, x);
 	if (maskduplicated) {
-		log(LOG_ERR, "rn_addmask: mask impossibly already in tree");
+		log(LOG_ERR, "rn_addmask: mask impossibly already in tree\n");
 		Free(saved_x);
 		goto out;
 	}
@@ -725,6 +727,9 @@ rn_delete(char *key, char *netmask, struct radix_node_head *head)
 	klen =  clen(key);
 	saved_tt = tt;
 	top = x;
+
+    _printb(tt == NULL);
+	_printb(bcmp(key + head_off, tt->rn_key + head_off, klen - head_off));
 	if (tt == NULL ||
 	    bcmp(key + head_off, tt->rn_key + head_off, klen - head_off))
 		return (NULL);

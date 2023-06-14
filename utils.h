@@ -13,3 +13,6 @@
 
 #define _printd(_v, _t) \
     kprintf("[%s] %s: %d\n", __FUNCTION__, #_v, (_t)(_v))
+
+#define _printb(_v) \
+    kprintf("[%s] %s: %s\n", __FUNCTION__, #_v, (_v) ? "TRUE" : "FALSE")
