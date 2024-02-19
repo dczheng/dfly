@@ -3,7 +3,6 @@
 ISO="dfly.iso"
 QCOW2="dfly.qcow2"
 
-IFACE="enp49s0"
 BR="br0"
 TAP="tap0"
 
@@ -24,6 +23,8 @@ OPTS="
     -device virtio-rng-pci,rng=rng0
 "
 
+IFACE=$2
+
 case $1 in 
     install)
         qemu-img create -f qcow2 $QCOW2 100G
@@ -36,7 +37,7 @@ case $1 in
         qemu-system-x86_64 $OPTS
     ;; 
 
-    net-setup)
+    setup)
         echo 1 > /proc/sys/net/ipv4/ip_forward
 
         systemctl stop networking
@@ -57,7 +58,7 @@ case $1 in
         ip route flush dev $IFACE
     ;;
 
-    net-clean)
+    clean)
         ip link set $IFACE nomaster
         ip tuntap delete $TAP mode tap
         ip link delete $BR type bridge
